@@ -1,0 +1,19 @@
+:root {
+    --gold: #FFD700;
+    --gold-dark: #C9A227;
+    --background: #0B0B0F;
+    --card: #151520;
+    --text: #FFFFFF;
+    --muted: #A0A0A0;
+}
+
+.stApp {
+    background-color: var(--background);
+}
+
+.metric-card {
+    background: var(--card);
+    border: 1px solid rgba(255,215,0,.25);
+    border-radius: 18px;
+    padding: 20px;
+}

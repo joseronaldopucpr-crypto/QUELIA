@@ -1,0 +1,26 @@
+# Secrets
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Env
+venv/
+.venv/
+
+# IDEs
+.idea/
+.vscode/
+
+# Streamlit
+.streamlit/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini
