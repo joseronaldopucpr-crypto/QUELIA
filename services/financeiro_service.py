@@ -8,20 +8,11 @@ from dateutil.relativedelta import relativedelta
 def gerar_grupo_recorrencia():
     return str(uuid.uuid4())
 
-
-def gerar_datas_recorrentes(
-        data_inicial,
-        quantidade_meses
-):
+def gerar_datas_recorrentes(data_inicial, quantidade_meses):
     datas = []
-
     for i in range(quantidade_meses):
-        datas.append(
-            data_inicial + relativedelta(months=i)
-        )
-
+        datas.append(data_inicial + relativedelta(months=i))
     return datas
-
 
 # ==========================================
 # MESES EM PORTUGUÊS
@@ -42,26 +33,16 @@ MESES_PT = {
     12: "Dezembro"
 }
 
-
 def obter_nome_mes(data_ref):
+    """Retorna o nome do mês em português"""
     return MESES_PT[data_ref.month]
-
 
 # ==========================================
 # FORMATAÇÃO MONETÁRIA
 # ==========================================
 
 def moeda(valor):
-
     try:
-
-        return (
-            f"R$ {float(valor):,.2f}"
-            .replace(",", "X")
-            .replace(".", ",")
-            .replace("X", ".")
-        )
-
+        return f"R$ {float(valor):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     except Exception:
-
         return "R$ 0,00"
