@@ -233,66 +233,72 @@ def gerar_pdf_relatorio(df_fluxo, df_filtrado, ano, periodo):
 
     pdf.ln(120)
 
-    # ÚLTIMOS LANÇAMENTOS
+    # ==========================================
+    # ÚLTIMOS LANÇAMENTOS (200 REGISTROS)
+    # ==========================================
     pdf.add_page()
     pdf.set_font("Arial", "B", 12)
     pdf.cell(0, 10, "5. ULTIMOS LANCAMENTOS", 0, 1, 'L')
 
-    df_ultimos = df_filtrado.sort_values('data_prevista', ascending=False).head(50)
+    # Aumentar para 200 registros
+    df_ultimos = df_filtrado.sort_values('data_prevista', ascending=False).head(200)
 
     if not df_ultimos.empty:
+        # Cabeçalho mais compacto
         pdf.set_font("Arial", "B", 7)
         pdf.set_fill_color(200, 200, 200)
-        pdf.cell(15, 6, "ID", 1, 0, 'C', 1)
-        pdf.cell(25, 6, "Data", 1, 0, 'C', 1)
-        pdf.cell(18, 6, "Tipo", 1, 0, 'C', 1)
-        pdf.cell(55, 6, "Descricao", 1, 0, 'C', 1)
-        pdf.cell(30, 6, "Categoria", 1, 0, 'C', 1)
-        pdf.cell(25, 6, "Valor", 1, 1, 'C', 1)
+        pdf.cell(12, 5, "ID", 1, 0, 'C', 1)
+        pdf.cell(22, 5, "Data", 1, 0, 'C', 1)
+        pdf.cell(15, 5, "Tipo", 1, 0, 'C', 1)
+        pdf.cell(50, 5, "Descricao", 1, 0, 'C', 1)
+        pdf.cell(25, 5, "Categoria", 1, 0, 'C', 1)
+        pdf.cell(22, 5, "Valor", 1, 1, 'C', 1)
 
         pdf.set_font("Arial", "", 6)
         linha_atual = pdf.get_y()
 
         for i, (_, row) in enumerate(df_ultimos.iterrows()):
-            if linha_atual > 250:
+            # Nova página quando necessário
+            if linha_atual > 270:
                 pdf.add_page()
                 pdf.set_font("Arial", "B", 7)
                 pdf.set_fill_color(200, 200, 200)
-                pdf.cell(15, 6, "ID", 1, 0, 'C', 1)
-                pdf.cell(25, 6, "Data", 1, 0, 'C', 1)
-                pdf.cell(18, 6, "Tipo", 1, 0, 'C', 1)
-                pdf.cell(55, 6, "Descricao", 1, 0, 'C', 1)
-                pdf.cell(30, 6, "Categoria", 1, 0, 'C', 1)
-                pdf.cell(25, 6, "Valor", 1, 1, 'C', 1)
+                pdf.cell(12, 5, "ID", 1, 0, 'C', 1)
+                pdf.cell(22, 5, "Data", 1, 0, 'C', 1)
+                pdf.cell(15, 5, "Tipo", 1, 0, 'C', 1)
+                pdf.cell(50, 5, "Descricao", 1, 0, 'C', 1)
+                pdf.cell(25, 5, "Categoria", 1, 0, 'C', 1)
+                pdf.cell(22, 5, "Valor", 1, 1, 'C', 1)
                 pdf.set_font("Arial", "", 6)
                 linha_atual = pdf.get_y()
 
+            # Alternar cores
             if i % 2 == 0:
                 pdf.set_fill_color(230, 230, 230)
             else:
                 pdf.set_fill_color(255, 255, 255)
 
-            pdf.cell(15, 5, str(row['id']), 1, 0, 'C', 1)
-            pdf.cell(25, 5, formatar_data_br_local(row['data_prevista']), 1, 0, 'C', 1)
+            pdf.cell(12, 4.5, str(row['id']), 1, 0, 'C', 1)
+            pdf.cell(22, 4.5, formatar_data_br_local(row['data_prevista']), 1, 0, 'C', 1)
 
             if row['tipo'] == 'receita':
                 pdf.set_text_color(0, 150, 0)
             else:
                 pdf.set_text_color(200, 0, 0)
-            pdf.cell(18, 5, row['tipo'][:10], 1, 0, 'C', 1)
+            pdf.cell(15, 4.5, row['tipo'][:10], 1, 0, 'C', 1)
             pdf.set_text_color(0, 0, 0)
 
-            descricao = row['item'][:35] if len(row['item']) > 35 else row['item']
-            pdf.cell(55, 5, descricao, 1, 0, 'L', 1)
+            descricao = row['item'][:40] if len(row['item']) > 40 else row['item']
+            pdf.cell(50, 4.5, descricao, 1, 0, 'L', 1)
 
             categoria = row['categoria'][:20] if len(row['categoria']) > 20 else row['categoria']
-            pdf.cell(30, 5, categoria, 1, 0, 'L', 1)
+            pdf.cell(25, 4.5, categoria, 1, 0, 'L', 1)
 
             if row['tipo'] == 'receita':
                 pdf.set_text_color(0, 150, 0)
             else:
                 pdf.set_text_color(200, 0, 0)
-            pdf.cell(25, 5, formatar_moeda_local(row['valor']), 1, 1, 'R', 1)
+            pdf.cell(22, 4.5, formatar_moeda_local(row['valor']), 1, 1, 'R', 1)
             pdf.set_text_color(0, 0, 0)
 
             linha_atual = pdf.get_y()
@@ -321,7 +327,7 @@ df['data_prevista'] = pd.to_datetime(df['data_prevista'])
 if 'tipo_relatorio' not in st.session_state:
     st.session_state.tipo_relatorio = "anual"
 if 'ano_selecionado' not in st.session_state:
-    st.session_state.ano_selecionado = 2026  # Fixo em 2026
+    st.session_state.ano_selecionado = 2026
 if 'mes_selecionado' not in st.session_state:
     st.session_state.mes_selecionado = datetime.now().month
 
@@ -349,8 +355,8 @@ with col3:
 # FILTROS
 # ==========================================
 
-ano_atual = 2026  # Fixo em 2026 para evitar anos futuros
-anos_futuros = list(range(2026, 2037))  # 2026 até 2036
+ano_atual = 2026
+anos_futuros = list(range(2026, 2037))
 
 if st.session_state.tipo_relatorio == "mensal":
     anos_existentes = sorted(df['data_prevista'].dt.year.unique())
@@ -477,9 +483,8 @@ if not df_fluxo.empty:
             if percentual >= 100:
                 st.error(f"🔴 **{categoria}** - Limite estourado! {formatar_moeda(gasto)} / {formatar_moeda(limite)}")
                 alertas_ativos = True
-            elif percentual >= 70:  # ALTERADO DE 80 PARA 70
-                st.warning(
-                    f"🟠 **{categoria}** - Atenção! {formatar_moeda(gasto)} / {formatar_moeda(limite)} ({percentual:.0f}%)")
+            elif percentual >= 70:
+                st.warning(f"🟠 **{categoria}** - Atenção! {formatar_moeda(gasto)} / {formatar_moeda(limite)} ({percentual:.0f}%)")
                 alertas_ativos = True
             else:
                 st.success(f"🟢 **{categoria}** - OK. {formatar_moeda(gasto)} / {formatar_moeda(limite)}")
@@ -488,6 +493,7 @@ if not df_fluxo.empty:
             st.success("🎉 Todos os orçamentos estão dentro do limite!")
     else:
         st.info("📊 Nenhum orçamento definido. Vá para a página 'Orçamentos' para definir limites por categoria.")
+
 # ==========================================
 # GRÁFICOS DE BARRAS
 # ==========================================
@@ -514,8 +520,7 @@ if not df_fluxo.empty:
     st.subheader("💰 Evolução do Saldo")
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(x=df_fluxo['Mês'], y=df_fluxo['Saldo Anterior'], name='Saldo Anterior (início do mês)',
-                              mode='lines+markers', line=dict(color='#f39c12', width=2, dash='dash'),
-                              marker=dict(size=6)))
+                              mode='lines+markers', line=dict(color='#f39c12', width=2, dash='dash'), marker=dict(size=6)))
     fig2.add_trace(go.Scatter(x=df_fluxo['Mês'], y=df_fluxo['Saldo Atual'], name='Saldo Atual (fim do mês)',
                               mode='lines+markers', line=dict(color='#2ecc71', width=3), marker=dict(size=8)))
     fig2.update_layout(title="Evolução do Saldo - Início vs Fim do Mês", xaxis_title="Mês", yaxis_title="Saldo (R$)",
